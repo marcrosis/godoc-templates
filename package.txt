@@ -1,5 +1,4 @@
 {{with .PDoc}}
-
 {{comment_text .Doc "" "\t"}}
 {{/*examples*/}}
 {{range $.Examples}}
@@ -37,7 +36,7 @@
 ## Functions
 {{range .Funcs}}
 {{/* Name is a string - no need for FSet */}}
-##{{.Name}}
+## [{{.Name}}]({{with .Decl}}{{with $.FSet.Position .Pos}}{{.Filename}}#L{{.Line}}{{end}}{{end}})
 ```go
 {{node $ .Decl}}
 ```
@@ -76,7 +75,7 @@
 {{methodset_html $ $tname}}
 
 {{range .Funcs}}
-### [{{.Name}}]({{with .Decl}}{{$.FSet.Position .Pos}}{{end}})
+### [{{.Name}}]({{with .Decl}}{{with $.FSet.Position .Pos}}{{.Filename}}#L{{.Line}}{{end}}{{end}})
 ```go
 {{node $ .Decl}}
 ```
@@ -87,7 +86,7 @@
 {{end}}
 
 {{range .Methods}}
-### [{{.Name}}]({{with .Decl}}{{$.FSet.Position .Pos}}{{end}})
+### [{{.Name}}]({{with .Decl}}{{with $.FSet.Position .Pos}}{{.Filename}}#L{{.Line}}{{end}}{{end}})
 ```go
 {{node $ .Decl}}
 ```
