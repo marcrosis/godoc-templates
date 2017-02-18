@@ -1,0 +1,21 @@
+{{with .PDoc}}
+
+{{comment_text .Doc "" "\t"}}
+{{example_text $ "" "    "}}
+{{range $.Examples}}
+{{example_suffix .Name}}
+```go
+{{node $ .Play}}
+```
+{{end}}
+{{end}}
+{{with .Dirs}}SUBDIRECTORIES
+{{if $.DirFlat}}
+	{{range .List}}{{if .HasPkg}}
+		{{.Path}}
+	{{end}}
+{{end}}
+{{else}}{{range .List}}
+	{{repeat `. ` .Depth}}{{.Name}}{{end}}
+{{end}}
+{{end}}
