@@ -8,14 +8,11 @@
 ```
 {{end}}
 {{/*end examples*/}}
-
 {{if not $.IsMain}}
 `import {{.ImportPath}}`
 {{end}}
-
-
 {{with .Consts}}
-## Constants
+# Constants
 {{range .}}
 {{comment_text .Doc "" "\t"}}
 ```go
@@ -23,9 +20,8 @@
 ```
 {{end}}
 {{end}}
-
 {{with .Vars}}
-##Variables
+# Variables
 {{range .}}
 {{comment_text .Doc "" "\t"}}
 ```go
@@ -33,8 +29,9 @@
 ```
 {{end}}
 {{end}}
-## Functions
-{{range .Funcs}}
+{{with .Funcs}}
+# Functions
+{{range .}}
 {{/* Name is a string - no need for FSet */}}
 ## [{{.Name}}]({{with .Decl}}{{with $.FSet.Position .Pos}}{{.Filename}}#L{{.Line}}{{end}}{{end}})
 ```go
@@ -44,53 +41,45 @@
 {{example_html $ .Name}}
 {{callgraph_html $ "" .Name}}
 {{end}}
-## Types
-{{range .Types}}
+{{end}}
+{{with .Types}}
+# Types
+{{range .}}
 {{$tname := .Name}}
-### {{.Name}}
-
+## [{{.Name}}]({{with .Decl}}{{with $.FSet.Position .Pos}}{{.Filename}}#L{{.Line}}{{end}}{{end}})
 {{comment_text .Doc "" "\t"}}
 ```go
 {{node $ .Decl}}
 ```
-
 {{range .Consts}}
 {{comment_text .Doc "" "\t"}}
 ```go
 {{node $ .Decl}}
 ```
-
 {{end}}
-
 {{range .Vars}}
 {{comment_text .Doc "" "\t"}}
 ```go
 {{node $ .Decl}}
 ```
-
 {{end}}
-
 {{example_html $ $tname}}
 {{implements_html $ $tname}}
 {{methodset_html $ $tname}}
-
 {{range .Funcs}}
 ### [{{.Name}}]({{with .Decl}}{{with $.FSet.Position .Pos}}{{.Filename}}#L{{.Line}}{{end}}{{end}})
 ```go
 {{node $ .Decl}}
 ```
-
 {{comment_text .Doc "" "\t"}}
 {{example_html $ .Name}}
 {{callgraph_html $ "" .Name}}
 {{end}}
-
 {{range .Methods}}
 ### [{{.Name}}]({{with .Decl}}{{with $.FSet.Position .Pos}}{{.Filename}}#L{{.Line}}{{end}}{{end}})
 ```go
 {{node $ .Decl}}
 ```
-
 {{comment_text .Doc "" "\t"}}
 {{$name := printf "%s_%s" $tname .Name}}
 {{example_html $ $name}}
@@ -98,9 +87,9 @@
 {{end}}
 {{end}}
 {{end}}
-
-#Notes
+{{end}}
 {{with $.Notes}}
+#Notes
 {{range $marker, $content := .}}
 ##{{noteTitle $marker | html}}s</h2>
 {{range .}}
@@ -108,13 +97,8 @@
 {{end}}
 {{end}}
 {{end}}
-
-
-
-
-
-
-{{with .Dirs}}SUBDIRECTORIES
+{{with .Dirs}}
+# Packages
 {{if $.DirFlat}}
 	{{range .List}}{{if .HasPkg}}
 		[{{.Path}}](/{{.Path}})
