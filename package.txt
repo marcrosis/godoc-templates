@@ -1,21 +1,129 @@
 {{with .PDoc}}
 
 {{comment_text .Doc "" "\t"}}
-{{example_text $ "" "    "}}
+{{/*examples*/}}
 {{range $.Examples}}
 {{example_suffix .Name}}
 ```go
 {{node $ .Play}}
 ```
 {{end}}
+{{/*end examples*/}}
+
+{{if not $.IsMain}}
+`import {{.ImportPath}}`
 {{end}}
+
+
+{{with .Consts}}
+## Constants
+{{range .}}
+{{comment_text .Doc "" "\t"}}
+```go
+{{node $ .Decl}}
+```
+{{end}}
+{{end}}
+
+{{with .Vars}}
+##Variables
+{{range .}}
+{{comment_text .Doc "" "\t"}}
+```go
+{{node $ .Decl}}
+```
+{{end}}
+{{end}}
+## Functions
+{{range .Funcs}}
+{{/* Name is a string - no need for FSet */}}
+##{{.Name}}
+```go
+{{node $ .Decl}}
+```
+{{comment_text .Doc "" "\t"}}
+{{example_html $ .Name}}
+{{callgraph_html $ "" .Name}}
+{{end}}
+## Types
+{{range .Types}}
+{{$tname := .Name}}
+### {{.Name}}
+
+{{comment_text .Doc "" "\t"}}
+```go
+{{node $ .Decl}}
+```
+
+{{range .Consts}}
+{{comment_text .Doc "" "\t"}}
+```go
+{{node $ .Decl}}
+```
+
+{{end}}
+
+{{range .Vars}}
+{{comment_text .Doc "" "\t"}}
+```go
+{{node $ .Decl}}
+```
+
+{{end}}
+
+{{example_html $ $tname}}
+{{implements_html $ $tname}}
+{{methodset_html $ $tname}}
+
+{{range .Funcs}}
+### [{{.Name}}]({{with .Decl}}{{$.FSet.Position .Pos}}{{end}})
+```go
+{{node $ .Decl}}
+```
+
+{{comment_text .Doc "" "\t"}}
+{{example_html $ .Name}}
+{{callgraph_html $ "" .Name}}
+{{end}}
+
+{{range .Methods}}
+### [{{.Name}}]({{with .Decl}}{{$.FSet.Position .Pos}}{{end}})
+```go
+{{node $ .Decl}}
+```
+
+{{comment_text .Doc "" "\t"}}
+{{$name := printf "%s_%s" $tname .Name}}
+{{example_html $ $name}}
+{{callgraph_html $ .Recv .Name}}
+{{end}}
+{{end}}
+{{end}}
+
+#Notes
+{{with $.Notes}}
+{{range $marker, $content := .}}
+##{{noteTitle $marker | html}}s</h2>
+{{range .}}
+- {{comment_text .Body "" "\t"}}
+{{end}}
+{{end}}
+{{end}}
+
+
+
+
+
+
 {{with .Dirs}}SUBDIRECTORIES
 {{if $.DirFlat}}
 	{{range .List}}{{if .HasPkg}}
-		{{.Path}}
+		[{{.Path}}](/{{.Path}})
 	{{end}}
 {{end}}
 {{else}}{{range .List}}
-	{{repeat `. ` .Depth}}{{.Name}}{{end}}
+	{{repeat `. ` .Depth}}
+[{{.Name}}](\{{.Name}})  {{.Synopsis}}
+	{{end}}
 {{end}}
 {{end}}
